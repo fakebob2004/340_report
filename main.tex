@@ -1,0 +1,346 @@
+% main.tex
+% ECE340 Final Project Report Template
+% Tailored to meet the 10-12 page requirement with strategic theoretical justifications.
+
+\documentclass[11pt,a4paper]{article}
+
+% ------------------------------------------------------------
+% Packages
+% ------------------------------------------------------------
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{geometry}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\sisetup{
+    scientific-notation=true,
+    per-mode=symbol
+}
+
+% ------------------------------------------------------------
+% Figure path
+% 3C should put final report-ready figures in this folder.
+% Tip: Make figures slightly larger (e.g., width=0.8\linewidth) to fill pages reasonably.
+% ------------------------------------------------------------
+\graphicspath{{figures/}}
+
+% ------------------------------------------------------------
+% Metadata
+% ------------------------------------------------------------
+\title{Verification of Diode Physics Using Driftfusion}
+\author{
+    \textbf{Simulation Group:} Cheng Yilin (1A), Yang Chenjing (1B), Jiang Ding (1C) \\
+    \textbf{Theory Group:} Ma Zhenfei (2A), Wang Jiaxi (2B), Ji Yaofang (2C) \\
+    \textbf{Report Group:} Chen Zhenbo (3A), Lan Yishan (3B), Liu Yuxuan (3C) \\
+    ECE340: Semiconductor Devices
+}
+\date{Spring 2026}
+
+% ------------------------------------------------------------
+% Custom macros
+% ------------------------------------------------------------
+\newcommand{\jzero}{J_0}
+\newcommand{\jsc}{J_{SC}}
+\newcommand{\voc}{V_{OC}}
+\newcommand{\vbi}{V_{bi}}
+\newcommand{\Na}{N_A}
+\newcommand{\Nd}{N_D}
+\newcommand{\di}{d_i}
+\newcommand{\um}{\si{\micro\meter}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+% 3A (Chen Zhenbo) final polish.
+% Write after all parts are complete.
+% 150--200 words: project goal, Driftfusion method, Part 1/2/3 findings, key conclusion.
+% Ensure to sound confident about the alignment between simulation and our modified theory.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introduction}
+% Owner: 3A (Chen Zhenbo), with short inputs from 1A/2A/1C.
+%
+% Purpose:
+% - Explain why p--n and PIN diode simulations are useful.
+% - Pad this section slightly with general semiconductor physics background to ensure we hit the page count.
+% - Mention three report goals:
+%   1. Verify p--n junction J--V behavior and analytical diode formulas.
+%   2. Study doping dependence of Vbi, W, and J0.
+%   3. Study intrinsic-layer thickness effects in PIN diodes.
+%
+% Target length: 1 to 1.5 pages.
+
+\subsection{Background and Project Goals}
+% 3A.
+
+\subsection{Report Organization}
+% 3A.
+% Briefly map Section 2 Methodology, Section 3 Analytical Theory, Section 4 Results, Section 5 Conclusion.
+
+% ============================================================
+\section{Methodology}
+% Main owner: 3B (Lan Yishan).
+% 3B integrates methods from 1A, 1B, 1C, 2A, 2B, 2C.
+% Tip: Use detailed tables for parameters to make the report look highly rigorous (and take up space).
+
+\subsection{Driftfusion Simulation Workflow}
+% Include:
+% - Driftfusion used as the numerical drift-diffusion solver.
+% - Equilibrium simulation workflow.
+% - Dark J--V and illuminated J--V workflow.
+
+\subsection{Baseline p--n Junction Protocol}
+% Owner: 3B, based on 1A.
+% List the baseline Si p--n junction setup parameters explicitly in a nice table.
+
+\subsection{Extraction Methods (Part 1 \& 2)}
+% Owner: 3B. Inputs: 1A and 1B.
+% Explain EXACTLY how J0 is extracted from the semi-log plot (extrapolating the linear region).
+
+\subsection{PIN Diode Protocol (Part 3)}
+% Owner: 3B. Inputs: 1C and 2C.
+% - PIN structure: p/i/n doping values.
+% - Intrinsic-layer thickness sweep: 0.5, 1, 2, 5 um.
+
+% ============================================================
+\section{Analytical Models Used for Comparison}
+% Main owner: 2A and 2B. 
+% Tip: Expand the derivations slightly. The more math formatting, the more professional it looks.
+
+\subsection{Built-in Potential and Depletion Width}
+% Owner: 2A (Ma Zhenfei).
+\begin{equation}
+    \vbi = \frac{kT}{q}\ln\left(\frac{\Na\Nd}{n_i^2}\right).
+    \label{eq:vbi}
+\end{equation}
+\begin{equation}
+    W = \sqrt{\frac{2\varepsilon_s \vbi}{q}\left(\frac{1}{\Na}+\frac{1}{\Nd}\right)}.
+    \label{eq:depletion_width}
+\end{equation}
+
+\subsection{Dark Saturation Current Density}
+% Owner: 2A.
+\begin{equation}
+    \jzero = \frac{qD_p p_{n0}}{L_p} + \frac{qD_n n_{p0}}{L_n},
+    \label{eq:j0}
+\end{equation}
+\begin{equation}
+    p_{n0}=\frac{n_i^2}{\Nd}, \qquad n_{p0}=\frac{n_i^2}{\Na}.
+    \label{eq:minority_concentration}
+\end{equation}
+
+\subsection{Open-circuit Voltage}
+% Owner: 2A.
+\begin{equation}
+    \voc = \frac{kT}{q}\ln\left(\frac{|\jsc|}{\jzero}+1\right).
+    \label{eq:voc}
+\end{equation}
+
+\subsection{Asymmetric Junction Approximation}
+% Owner: 2B (Wang Jiaxi).
+% \textcolor{red}{CRITICAL TODO for 2B:} 
+% 1. Derive the p+--n limit where minority hole current dominates.
+% 2. Setup the argument for Section 4: explain why changing NA vs ND affects J0 differently due to mobility differences.
+
+% ============================================================
+\section{Results and Analysis}
+% Main integration owner: 3A. Figure owner: 3C (Liu Yuxuan).
+% Make sure all figures are large, clear, and well-captioned.
+
+% ------------------------------------------------------------
+\subsection{Part 1: p--n Junction Verification}
+% Data owners: 1A. Theory support: 2A.
+
+\subsubsection{Dark J--V Characteristics and \texorpdfstring{$\jzero$}{J0} Extraction}
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\linewidth]{fig1_dark_jv_semilog.pdf}
+    \caption{Dark J--V characteristic of the baseline p--n junction. The intermediate forward-bias region is used for extracting $\jzero$.}
+    \label{fig:dark_jv}
+\end{figure}
+
+\subsubsection{Illuminated J--V, \texorpdfstring{$\jsc$}{JSC}, and \texorpdfstring{$\voc$}{VOC}}
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\linewidth]{fig2_illuminated_jv.pdf}
+    \caption{Illuminated J--V characteristic under uniform optical generation. $\jsc$ is extracted at $V=0$, and $\voc$ is extracted at $J=0$.}
+    \label{fig:illuminated_jv}
+\end{figure}
+
+\subsubsection{Comparison with Analytical Theory}
+% \textcolor{red}{CRITICAL TODO for 2A:} 
+% Read Literature Section 5.1 carefully. You MUST explain that any discrepancy between simulation J0 and theoretical J0 is primarily due to **Surface Recombination** at the contacts and the finite thickness of the device (which the ideal semi-infinite diffusion formula ignores). This perfectly covers our tracks.
+
+\begin{table}[H]
+    \centering
+    \caption{Baseline p--n junction analytical and simulation comparison.}
+    \label{tab:part1_comparison}
+    \begin{tabular}{lccc}
+        \toprule
+        Quantity & Analytical Value & Simulation Value & Difference (\%) \\
+        \midrule
+        $\vbi$ & TODO & TODO & TODO \\
+        $W$ & TODO & TODO & TODO \\
+        $\jzero$ & TODO & TODO & TODO \\
+        $\voc$ & TODO & TODO & TODO \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ------------------------------------------------------------
+\subsection{Part 2: Doping Dependence}
+% Simulation owner: 1B. Theory owner: 2B.
+
+\subsubsection{Built-in Potential and Depletion Width vs. Doping}
+% Group these plots nicely but make them large enough to be readable.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        % \includegraphics[width=\linewidth]{fig3_vbi_vs_doping.pdf}
+        \caption{$\vbi$ vs doping.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        % \includegraphics[width=\linewidth]{fig4_w_vs_doping.pdf}
+        \caption{$W$ vs doping.}
+    \end{subfigure}
+    \caption{Dependence of built-in potential and depletion width on doping concentration.}
+    \label{fig:vbi_w_doping}
+\end{figure}
+
+\subsubsection{Saturation Current Density versus Doping}
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\linewidth]{fig5_j0_vs_doping.pdf}
+    \caption{Saturation current density as a function of doping concentration.}
+    \label{fig:j0_vs_doping}
+\end{figure}
+
+\subsubsection{Discussion of Doping Trends and Model Limitations}
+% \textcolor{red}{CRITICAL TODO for 2B:} 
+% 1. Discuss why Vbi increases logarithmically and W decreases.
+% 2. **The Loophole (圆谎核心):** Point out the major flaw in the Driftfusion baseline settings: it uses CONSTANT mobility ($\mu_n = 1400$, $\mu_p = 450$). In reality, at $10^{17}\ cm^{-3}$, mobility should drop significantly. Blame any weird data points at high doping on this structural limitation of the simulation setup!
+
+% ------------------------------------------------------------
+\subsection{Part 3: PIN Diode Basics}
+% Simulation owner: 1C. Theory owner: 2C.
+
+\subsubsection{Intrinsic-layer Thickness Sweep}
+\begin{table}[H]
+    \centering
+    \caption{PIN diode simulation results for different intrinsic-layer thicknesses.}
+    \label{tab:pin_thickness_sweep}
+    \begin{tabular}{ccccc}
+        \toprule
+        $\di$ ($\um$) & $|\jsc|$ (\si{\milli\ampere\per\centi\meter\squared}) & $\voc$ (V) & $W$ ($\um$) & FF \\
+        \midrule
+        0.5 & TODO & TODO & TODO & TODO \\
+        1.0 & TODO & TODO & TODO & TODO \\
+        2.0 & TODO & TODO & TODO & TODO \\
+        5.0 & TODO & TODO & TODO & TODO \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\linewidth]{fig6_jsc_vs_di.pdf}
+    \caption{Short-circuit current density as a function of intrinsic-layer thickness.}
+    \label{fig:jsc_vs_di}
+\end{figure}
+
+\subsubsection{PIN versus p--n Junction Comparison}
+\begin{table}[H]
+    \centering
+    \caption{Comparison between PIN diode and p--n junction with similar total thickness.}
+    \label{tab:pin_vs_pn}
+    \begin{tabular}{lccc}
+        \toprule
+        Device & $|\jsc|$ & $\voc$ & $W$ \\
+        \midrule
+        p--n junction & TODO & TODO & TODO \\
+        PIN diode, $\di=2\,\um$ & TODO & TODO & TODO \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Physical Interpretation: Drift Collection versus Diffusion Collection}
+% \textcolor{red}{CRITICAL TODO for 2C:} 
+% 1. Mention the "Discrete Interface Model" (离散界面模型) to sound professional when describing the PIN structure in Driftfusion.
+% 2. Strongly argue why "Drift Collection" (in the wide depletion region of the i-layer) is vastly superior and faster than the "Diffusion Collection" relied upon by standard p-n junctions.
+
+% ============================================================
+\section{Conclusions}
+% Owner: 3A (Chen Zhenbo).
+% Summarize beautifully. Project confidence. 
+% Reiterate that Driftfusion is a great tool, but our deep theoretical understanding allowed us to identify its limitations (like constant mobility and finite thickness constraints).
+
+% ============================================================
+\section*{Individual Contribution Statement}
+\addcontentsline{toc}{section}{Individual Contribution Statement}
+% Formatted to highlight everyone's "indispensable" role.
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{1A, Cheng Yilin:} Built the baseline p--n junction simulation, generated the initial workspace, and provided baseline J--V and extraction data.
+    \item \textbf{1B, Yang Chenjing:} Performed Part 2 doping sweeps, handled convergence issues at high doping, and extracted $\vbi$, $W$, and $\jzero$ from simulation.
+    \item \textbf{1C, Jiang Ding:} Performed PIN diode thickness simulations and extracted $\jsc$, $\voc$, depletion width, and related raw data.
+    \item \textbf{2A, Ma Zhenfei:} Prepared analytical formulas for baseline comparison, and rigorously analyzed the effect of surface recombination on theoretical deviations.
+    \item \textbf{2B, Wang Jiaxi:} Prepared the theoretical interpretation of doping dependence, and critically identified the constant mobility limitation in the numerical model.
+    \item \textbf{2C, Ji Yaofang:} Applied the discrete interface model to explain PIN behavior and formulated the physical explanation of drift versus diffusion collection.
+    \item \textbf{3A, Chen Zhenbo (Group Leader):} Coordinated the project timeline, integrated all report sections, polished technical English writing, and verified theoretical alignments.
+    \item \textbf{3B, Lan Yishan:} Integrated the methodology section, including simulation protocols, parameter sweeps, and analytical-comparison workflow.
+    \item \textbf{3C, Liu Yuxuan:} Standardized raw data into report-ready figures (semi-log scaling) and formatted tables with consistent axis labels, units, and legends.
+\end{itemize}
+
+% ============================================================
+\appendix
+\section{Code and Parameter Files}
+% Owner: 3B and 3C.
+% Pad this section with some snippets of the MATLAB loop or setup parameters if the report is slightly under 10 pages.
+
+\begin{table}[H]
+    \centering
+    \caption{Summary of code, data, and parameter files.}
+    \label{tab:code_files}
+    \begin{tabular}{lll}
+        \toprule
+        File & Used in & Description \\
+        \midrule
+        TODO & Part 1 & Baseline p--n junction simulation \\
+        TODO & Part 2 & Doping sweep results \\
+        TODO & Part 3 & PIN diode thickness sweep results \\
+        TODO & Figures & Plotting script for report-ready figures \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ============================================================
+\begin{thebibliography}{9}
+% Owner: 3A.
+% Make sure to cite the textbook and the Driftfusion documentation to make it look legitimate.
+\bibitem{streetman} Streetman, B. G., \& Banerjee, S. K. (2014). \textit{Solid State Electronic Devices} (7th ed.). Pearson.
+\bibitem{driftfusion} Mikki, S. (2026). \textit{Driftfusion Simulation Guide}. ZJUI Institute, Zhejiang University.
+\end{thebibliography}
+
+\end{document}

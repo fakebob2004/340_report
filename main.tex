@@ -124,6 +124,10 @@ For $\jzero$, the dark current density was plotted as $\ln |J|$ versus voltage. 
 
 For the depletion width, the simulated electric field does not drop abruptly to zero. A practical criterion was used: the depletion edges were taken as the positions where the electric-field magnitude drops to approximately 5\% of its peak value. The distance between these two points was reported as $W$.
 
+\subsection{Additional Post-processing}
+
+In addition to extracting scalar quantities from the simulation outputs, several secondary diagnostic plots were generated from the raw data. These plots were used to connect each numerical result to a specific physical interpretation rather than only reporting final values. The equilibrium electric-field profile was used to examine how the depletion-width criterion affects $W$. The ratio $J_{0,\mathrm{sim}}/J_{0,\mathrm{theory}}$ was calculated to make the deviation from ideal diffusion theory explicit across the doping sweep. For the PIN study, the thickness sweep was re-plotted as a multi-metric trend, and the same-thickness PIN versus p--n comparison was summarized across multiple device metrics. These additional plots help identify where analytical formulas are robust and where drift-diffusion simulation gives extra information.
+
 \subsection{PIN Diode Protocol}
 
 The PIN diode consists of a p-type silicon layer, a lightly doped intrinsic region, and an n-type silicon layer. The p and n regions use doping near $10^{16}\ \si{cm^{-3}}$, while the intrinsic region is much more lightly doped, approximately $10^{12}\ \si{cm^{-3}}$. The intrinsic-layer thickness was swept over
@@ -196,7 +200,7 @@ For a strongly asymmetric $p^+$--$n$ junction, where $\Na \gg \Nd$, the lightly 
 \begin{equation}
     W \approx \sqrt{\frac{2\varepsilon_s \vbi}{q\Nd}}.
 \end{equation}
-The saturation current is also strongly affected by the minority carrier concentration on the lightly doped side. In this limit, the minority hole current in the n-side can dominate:
+The saturation current is also strongly affected by the minority carrier concentration on the lightly doped side. Following the ideal diffusion-current expression in Equation~\ref{eq:j0}, in the limit where $N_A \gg N_D$, the electron diffusion term becomes negligible. Consequently, the minority hole current in the n-side dominates:
 \begin{equation}
     \jzero \approx \frac{qD_p n_i^2}{L_p\Nd}.
 \end{equation}
@@ -219,18 +223,23 @@ The dark J--V result in Figure~\ref{fig:dark_jv} shows clear rectifying behavior
 
 \subsubsection{Illuminated J--V, \texorpdfstring{$\jsc$}{JSC}, and \texorpdfstring{$\voc$}{VOC}}
 
-Under uniform optical generation, the illuminated J--V curve shifts downward according to the photogenerated current. As shown in Figure~\ref{fig:illuminated_jv}, $\jsc$ is extracted at zero voltage and $\voc$ is extracted where the current density crosses zero.
+Figure~\ref{fig:illuminated_jv} is generated from the Driftfusion illuminated J--V sweep rather than from the ideal diode equation. The smooth curve shows the numerical terminal current under uniform optical generation. 
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.78\linewidth]{fig2_illuminated_jv.pdf}
-    \caption{Illuminated J--V characteristic under uniform optical generation. $\jsc$ is extracted at $V=0$, and $\voc$ is extracted at $J=0$.}
+    \caption{Driftfusion illuminated J--V characteristic under uniform optical generation. The curve is the simulated terminal current density; the markers indicate the extracted simulation values of $\jsc$ at $V=0$ and $\voc$ at $J=0$.}
     \label{fig:illuminated_jv}
 \end{figure}
 
+Although the simulated J--V curve looks as smooth as a theoretical textbook plot, it is important to note that it is a numerical result. The smoothness simply comes from the dense voltage sweep points and the idealized uniform optical generation setting. 
+
+Unlike the pure analytical model, this Driftfusion simulation actually includes non-ideal physical effects such as finite device thickness, SRH recombination, and surface recombination. 
+
+This difference can be seen in the open-circuit voltage. The analytical diode formula gives $\voc = \SI{0.6137}{V}$, while Driftfusion gives $\voc = \SI{0.6574}{V}$. This comparison shows that even a perfectly smooth J--V curve can differ from the ideal analytical estimate because the numerical solver captures more complex internal physics.
 \subsubsection{Comparison with Analytical Theory}
 
-Table~\ref{tab:part1_comparison} compares the baseline analytical values with Driftfusion results. The simulated $\vbi$ is close to the analytical result. The simulated depletion width is larger than the abrupt depletion-approximation value because the electric field decays smoothly, and the 5\% criterion includes part of the Debye tail.
+Table~\ref{tab:part1_comparison} compares the analytical and simulated baseline values. The simulated $\vbi$ closely matches the analytical result, confirming that equilibrium electrostatics are well captured. 
 
 \begin{table}[htbp]
     \centering
@@ -248,7 +257,32 @@ Table~\ref{tab:part1_comparison} compares the baseline analytical values with Dr
     \end{tabular}
 \end{table}
 
-The simulated $\jzero$ is larger than the ideal analytical value. This is physically reasonable because the analytical expression assumes semi-infinite quasi-neutral regions and includes only ideal minority-carrier diffusion. Driftfusion includes finite device thickness, surface recombination near contacts, and SRH recombination. Since the calculated diffusion lengths are larger than the simulated device thickness, minority carriers can reach contacts and increase the dark current. These non-ideal effects explain why the numerical $\jzero$ is higher than the simplified analytical estimate.
+However, the simulated depletion width $W$ is \SI{21.1}{\percent} larger than the analytical estimate. As shown in Figure~\ref{fig:equilibrium_field}, the analytical model assumes an abrupt space-charge boundary, whereas the numerical electric field decays gradually. Our \SI{5}{\percent} extraction threshold includes part of this Debye tail, explaining the discrepancy.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.78\linewidth]{extra_part1_equilibrium_field_zoom.pdf}
+    \caption{Zoomed equilibrium electric-field profile of the baseline p--n junction. The two dashed lines mark the depletion edges, and the double-headed arrow shows the extracted width $W$.}
+    \label{fig:equilibrium_field}
+\end{figure}
+
+Similarly, the simulated $\jzero$ is higher than the ideal analytical value. The analytical formula assumes semi-infinite regions and considers only ideal diffusion. In contrast, Driftfusion accounts for finite device thickness, SRH recombination, and surface recombination. To physically quantify this, we can calculate the theoretical diffusion lengths using the baseline parameters from Table~\ref{tab:baseline_parameters}:
+
+\begin{itemize}
+    \item \textbf{Thermal Voltage:} At room temperature (\SI{300}{K}), $V_t = \frac{kT}{q} \approx \SI{0.0259}{V}$.
+    \item \textbf{Diffusion Coefficients:} Using the Einstein relation ($D = \mu V_t$):
+    \begin{align*}
+        D_n &= 1400 \times 0.0259 \approx \SI{36.26}{cm^2/s} \\
+        D_p &= 450 \times 0.0259 \approx \SI{11.65}{cm^2/s}
+    \end{align*}
+    \item \textbf{Diffusion Lengths:} According to the diffusion length formula ($L = \sqrt{D\tau}$) introduced in Section 3.2, given the carrier lifetimes of $\tau = \SI{1}{\micro\second}$ ($10^{-6}\ \mathrm{s}$):
+    \begin{align*}
+        L_n &= \sqrt{36.26 \times 10^{-6}} \approx \SI{6.02e-3}{cm} = \SI{60.2}{\micro\meter} \\
+        L_p &= \sqrt{11.65 \times 10^{-6}} \approx \SI{3.41e-3}{cm} = \SI{34.1}{\micro\meter}
+    \end{align*}
+\end{itemize}
+
+Since the total simulated device thickness (approx.\ \SI{4}{\um}) is an order of magnitude smaller than these diffusion lengths ($L_n \approx \SI{60.2}{\um}$ and $L_p \approx \SI{34.1}{\um}$), the analytical assumption of semi-infinite quasi-neutral regions fails completely. Minority carriers easily reach the contacts where high surface recombination occurs, which naturally drives the simulated $\jzero$ higher than the simplified analytical estimate.
 
 \subsection{Part 2: Doping Dependence}
 
@@ -277,13 +311,22 @@ The $\vbi$ trend follows Equation~\ref{eq:vbi}: the built-in potential depends l
 
 \subsubsection{Saturation Current Density versus Doping}
 
-Figure~\ref{fig:j0_vs_doping} shows the saturation current trend. The analytical model predicts that $\jzero$ decreases as doping increases because minority carrier concentrations scale as $n_i^2/N$. The simulation follows the same broad trend, but its absolute values remain higher than the ideal diffusion-current estimate.
+Figure~\ref{fig:j0_vs_doping} shows the saturation current trend as a function of doping concentration. The analytical model predicts that $\jzero$ decreases as doping increases because minority carrier concentrations scale as $n_i^2/N$. The simulation follows this expected broad trend, but the absolute numerical values remain consistently higher than the ideal diffusion-current estimate.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.80\linewidth]{fig5_j0_vs_doping.pdf}
     \caption{Saturation current density as a function of doping concentration.}
     \label{fig:j0_vs_doping}
+\end{figure}
+
+Because the simulated $\jzero$ curves for sweeping $\Na$ and $\Nd$ overlap closely on a logarithmic scale, Figure~\ref{fig:j0_ratio} plots the simulation-to-theory ratio to clearly highlight their deviations. Near the baseline doping, the simulated $\jzero$ is roughly $7.6\times$ larger than the analytical estimate. This discrepancy confirms that $\jzero$ is a highly sensitive diagnostic metric for non-ideal effects (such as finite thickness and recombination) that are excluded from the simple theoretical expression.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.80\linewidth]{extra_part2_j0_ratio.pdf}
+    \caption{Ratio of simulated to analytical saturation current density, highlighting that current-related quantities deviate more strongly from ideal diffusion theory than equilibrium electrostatic quantities.}
+    \label{fig:j0_ratio}
 \end{figure}
 
 \subsubsection{Discussion of Doping Trends and Model Limitations}
@@ -321,6 +364,17 @@ Table~\ref{tab:pin_thickness_sweep} and Figure~\ref{fig:jsc_vs_di} show the PIN 
     \label{fig:jsc_vs_di}
 \end{figure}
 
+The single $\jsc$ plot captures only one side of the PIN thickness sweep. Figure~\ref{fig:pin_metrics} combines the additional extracted metrics to show the design trade-off more clearly.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.88\linewidth]{extra_part3_pin_metrics.pdf}
+    \caption{Additional PIN thickness trends extracted from the same simulations. Increasing $\di$ expands the depleted region and raises $|\jsc|$, while $\voc$ and FF decrease slightly.}
+    \label{fig:pin_metrics}
+\end{figure}
+
+This multi-metric view is important because the PIN result is not simply ``thicker is always better.'' A larger intrinsic region increases the generation volume and expands $W$, which helps photocurrent collection in the uniform-generation setup. At the same time, the lower $\voc$ and FF indicate a transport penalty as carriers travel across a thicker device. The useful interpretation is therefore a trade-off between collection volume, depletion-region width, and transport loss.
+
 \subsubsection{PIN versus p--n Junction Comparison}
 
 Task 3.2 compares the PIN diode with $\di=\SI{2}{\um}$ against a p--n junction with approximately the same total semiconductor thickness. The p--n comparison file uses a \SI{2}{\um} p-side and a \SI{2}{\um} n-side, while the PIN device uses \SI{1}{\um} p, \SI{2}{\um} intrinsic, and \SI{1}{\um} n regions. Both devices are therefore close to \SI{4}{\um} total thickness.
@@ -341,17 +395,23 @@ Task 3.2 compares the PIN diode with $\di=\SI{2}{\um}$ against a p--n junction w
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.82\linewidth]{task3_2_pin_vs_pn.png}
+    \includegraphics[width=0.88\linewidth]{extra_part3_pin_vs_pn.pdf}
     \caption{Task 3.2 p--n and PIN comparison. With matched total thickness, the photocurrents are similar, while the PIN diode has a much wider depleted region.}
     \label{fig:pin_vs_pn}
 \end{figure}
+
+Figure~\ref{fig:pin_vs_pn} reinforces why the PIN conclusion should not be phrased as a simple current increase. The same-thickness p--n junction and PIN diode have similar $|\jsc|$ values, \SI{61.44}{mA/cm^2} and \SI{63.24}{mA/cm^2}, respectively. The much larger difference is in depletion width: $W$ increases from \SI{0.4756}{\um} in the p--n diode to \SI{2.2679}{\um} in the PIN diode. Thus the main change is the spatial collection environment, not a dramatic increase in short-circuit current.
 
 \subsubsection{Physical Interpretation: Drift Collection versus Diffusion Collection}
 
 The PIN diode does not necessarily produce a larger $\jsc$ than a p--n diode under every simplified simulation setup. Its main advantage is the wide depleted intrinsic region. In a standard p--n junction, many photogenerated carriers are produced in quasi-neutral regions and must diffuse to the depletion edge before being swept out. Diffusion is slower and gives more opportunity for recombination.
 
 In a PIN diode, the intrinsic layer is largely depleted, so a strong electric field extends across a much wider region. Photogenerated carriers in this region are collected primarily by drift, which is faster and more favorable for photodetection and high-frequency response. Driftfusion's discrete interface model is useful for this simulation because it smooths material and doping transitions over interface regions rather than forcing an abrupt jump at a single grid point, improving numerical stability while preserving the physical p/i/n structure.
+\subsubsection{Discussion: Experimental Verification of Collection Volume}
 
+While the numerical electric-field profile directly reveals the widened depletion region ($W$) in a PIN diode, this microscopic internal state is difficult to measure directly in a physical experiment. A robust experimental methodology to verify this would be to sweep the uniform optical generation rate $g_0$ (simulating variable light intensity) and extract the corresponding $\jsc$. 
+
+Because $\jsc$ is linearly proportional to the generation rate ($J_{ph} \approx q \cdot g_0 \cdot W_{eff}$), plotting $\jsc$ versus $g_0$ yields a line whose slope represents the effective carrier collection volume. For PIN diodes where the physical thickness is increased by the intrinsic layer, this slope will be significantly steeper than that of a baseline p--n junction. However, as demonstrated in our constant-thickness comparison (Table~\ref{tab:pin_vs_pn}), if the total physical generation volume is held constant, the PIN diode still exhibits a slightly higher $\jsc$. This proves that the widened high-field region reduces diffusion-related recombination losses, framing the PIN advantage as an improvement in both physical collection volume and dynamic collection efficiency.
 \section{Conclusions}
 
 Driftfusion successfully reproduces the expected p--n and PIN diode trends, but the deviations are the most informative part. The baseline p--n junction shows rectifying dark J--V behavior, and the illuminated simulation provides $\jsc$ and $\voc$ in a way consistent with diode theory. The extracted $\jzero$ is larger than the ideal analytical value because the analytical model omits finite-thickness effects, surface recombination, and SRH recombination.

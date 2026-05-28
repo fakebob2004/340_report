@@ -32,7 +32,7 @@
 \author{
     \textbf{Simulation Group:} Guo Wangyihan (1A), Yang Chenhan (1B), Jiang Ding (1C) \\
     \textbf{Theory Group:} Ma Yinfei (2A), Wang Jiachang (2B), Ji Yaofang (2C) \\
-    \textbf{Report Group:} Chen Zhenbo (3A), Shen Yishan (3B), Liu Yuxuan (3C) \\
+    \textbf{Report Group:} Chen Zhenbo (3A), Sheng Yishan (3B), Liu Yuxuan (3C) \\
     ECE340: Semiconductor Devices
 }
 \date{Spring 2026}
@@ -48,7 +48,68 @@
 
 \begin{document}
 
-\maketitle
+\begin{titlepage}
+    \centering
+    \thispagestyle{empty}
+
+    \vspace*{1.0cm}
+
+    {\Large ZJUI Institute, Zhejiang University \par}
+
+    \vspace{1.4cm}
+
+    {\huge \textbf{Final Project Report} \par}
+
+    \vspace{0.8cm}
+
+    {\LARGE \textbf{Verification of Diode Physics Using Driftfusion} \par}
+
+    \vspace{1.0cm}
+
+    {\Large ECE340: Semiconductor Devices \par}
+    {\Large Spring 2026 \par}
+
+    \vspace{0.7cm}
+
+    {\large Instructor: Said Mikki \par}
+
+    \vspace{1.2cm}
+
+    {\large \textbf{Group Members and Oral Grade Sheet} \par}
+
+    \vspace{0.4cm}
+
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabular}{|c|l|l|c|}
+        \hline
+        \textbf{No.} & \textbf{Name} & \textbf{Role} & \textbf{Oral Grade} \\
+        \hline
+        1A & Guo Wangyihan & Simulation Group & \hspace{2.8cm} \\
+        \hline
+        1B & Yang Chenhan & Simulation Group & \hspace{2.8cm} \\
+        \hline
+        1C & Jiang Ding & Simulation Group & \hspace{2.8cm} \\
+        \hline
+        2A & Ma Yinfei & Theory Group & \hspace{2.8cm} \\
+        \hline
+        2B & Wang Jiachang & Theory Group & \hspace{2.8cm} \\
+        \hline
+        2C & Ji Yaofang & Theory Group & \hspace{2.8cm} \\
+        \hline
+        3A & Chen Zhenbo & Report Group & \hspace{2.8cm} \\
+        \hline
+        3B & Sheng Yishan & Report Group & \hspace{2.8cm} \\
+        \hline
+        3C & Liu Yuxuan & Report Group & \hspace{2.8cm} \\
+        \hline
+    \end{tabular}
+
+    \vfill
+
+    {\large \today \par}
+
+\end{titlepage}
+
 
 \begin{abstract}
 This project uses the Driftfusion one-dimensional drift-diffusion simulator to verify standard diode physics for silicon p--n junctions and PIN diodes, with particular attention to where textbook analytical models remain accurate and where they begin to miss non-ideal effects. The numerical workflow consists of equilibrium simulation, dark current-voltage sweeps, and illuminated current-voltage sweeps. From these simulations, the built-in potential $\vbi$, depletion width $W$, saturation current density $\jzero$, short-circuit current density $\jsc$, and open-circuit voltage $\voc$ are extracted and compared with analytical diode models. The equilibrium electrostatic quantities agree well with analytical formulas, showing that Poisson/depletion theory captures the junction electrostatics robustly. In contrast, current-related quantities such as $\jzero$ are more sensitive to finite device thickness, surface recombination, SRH recombination, and numerical extraction criteria. PIN diode simulations show that increasing the intrinsic-layer thickness increases generation volume and widens the depleted region, supporting drift-based carrier collection. Overall, the deviations are the most informative part of the comparison because they show which quantities are robustly captured by simple formulas and which require numerical drift-diffusion simulation.
@@ -79,25 +140,19 @@ Section 2 describes the Driftfusion simulation workflow and extraction methods. 
 
 \section{Methodology}
 
-\subsection{Driftfusion Simulation Workflow}
+This project used the Driftfusion open-source MATLAB code to simulate silicon p--n junctions and PIN diodes. The goal was to compare numerical drift-diffusion simulation results with analytical diode models. The main quantities studied were the built-in potential $V_{bi}$, depletion width $W$, saturation current density $J_0$, short-circuit current density $J_{SC}$, and open-circuit voltage $V_{OC}$.
 
-Driftfusion is a MATLAB-based drift-diffusion simulation tool for one-dimensional ordered semiconductor devices. It solves carrier continuity equations coupled with Poisson's equation, which makes it suitable for extracting spatial electrostatic quantities such as electric field and potential, as well as terminal J--V characteristics.
+\subsection{Simulation Setup}
 
-The project used three simulation steps:
-
-\begin{itemize}[leftmargin=2em]
-    \item \textbf{Equilibrium simulation:} zero-bias equilibrium was used to extract the built-in potential $\vbi$ and the electric-field profile. The depletion width $W$ was estimated from the electric-field profile.
-    \item \textbf{Dark J--V sweep:} voltage was swept without optical generation. The semi-log forward-bias region was used to extract the saturation current density $\jzero$.
-    \item \textbf{Illuminated J--V sweep:} a uniform optical generation rate was applied. The short-circuit current density $\jsc$ was extracted at $V=0$, and the open-circuit voltage $\voc$ was extracted at $J=0$.
-\end{itemize}
-
-\subsection{Baseline p--n Junction Protocol}
-
-The baseline device is a silicon p--n junction with symmetric doping,
+The simulations were based on the provided baseline parameter files. For the silicon p--n junction, symmetric doping was used:
 \[
-    \Na=\Nd=10^{16}\ \si{cm^{-3}}.
+N_A = N_D = 10^{16}\ \mathrm{cm^{-3}}.
 \]
-The main material and transport parameters are summarized in Table~\ref{tab:baseline_parameters}. The analytical calculations use $n_i=10^{10}\ \si{cm^{-3}}$ at \SI{300}{K}.
+The main material parameters were $E_g = 1.12\ \mathrm{eV}$, $\epsilon_r = 11.7$, $\mu_n = 1400\ \mathrm{cm^2/(V\cdot s)}$, $\mu_p = 450\ \mathrm{cm^2/(V\cdot s)}$, and $\tau_n = \tau_p = 10^{-6}\ \mathrm{s}$. For analytical calculations, the intrinsic carrier concentration was taken as
+\[
+n_i = 10^{10}\ \mathrm{cm^{-3}}.
+\]
+These parameters followed the project baseline settings for the p--n junction and PIN diode simulations.
 
 \begin{table}[htbp]
     \centering
@@ -118,24 +173,97 @@ The main material and transport parameters are summarized in Table~\ref{tab:base
     \end{tabular}
 \end{table}
 
-\subsection{Extraction Methods}
 
-For $\jzero$, the dark current density was plotted as $\ln |J|$ versus voltage. The low-forward-bias region may be affected by depletion-region SRH recombination, while the high-forward-bias region may be affected by series resistance. Therefore, $\jzero$ was extracted from the intermediate forward-bias region, approximately \SIrange{0.2}{0.5}{V}, by fitting the linear semi-log behavior and extrapolating to $V=0$.
 
-For the depletion width, the simulated electric field does not drop abruptly to zero. A practical criterion was used: the depletion edges were taken as the positions where the electric-field magnitude drops to approximately 5\% of its peak value. The distance between these two points was reported as $W$.
+\subsection{p--n Junction Simulation}
 
-\subsection{Additional Post-processing}
+The p--n junction was first simulated under equilibrium conditions. The built-in potential was calculated analytically using
+\begin{equation}
+V_{bi} = \frac{kT}{q}
+\ln \left( \frac{N_A N_D}{n_i^2} \right),
+\end{equation}
+and the depletion width was calculated using
+\begin{equation}
+W =
+\sqrt{
+\frac{2\epsilon_s V_{bi}}{q}
+\left(
+\frac{1}{N_A}+\frac{1}{N_D}
+\right)
+}.
+\end{equation}
 
-In addition to extracting scalar quantities from the simulation outputs, several secondary diagnostic plots were generated from the raw data. These plots were used to connect each numerical result to a specific physical interpretation rather than only reporting final values. The equilibrium electric-field profile was used to examine how the depletion-width criterion affects $W$. The ratio $J_{0,\mathrm{sim}}/J_{0,\mathrm{theory}}$ was calculated to make the deviation from ideal diffusion theory explicit across the doping sweep. For the PIN study, the thickness sweep was re-plotted as a multi-metric trend, and the same-thickness PIN versus p--n comparison was summarized across multiple device metrics. These additional plots help identify where analytical formulas are robust and where drift-diffusion simulation gives extra information.
+In the simulation, $V_{bi}$ was extracted from the equilibrium potential difference between the p-side and n-side contacts. The depletion width was estimated from the electric-field profile by locating the points where the electric-field magnitude decreased to about $5\%$ of its peak value.
 
-\subsection{PIN Diode Protocol}
-
-The PIN diode consists of a p-type silicon layer, a lightly doped intrinsic region, and an n-type silicon layer. The p and n regions use doping near $10^{16}\ \si{cm^{-3}}$, while the intrinsic region is much more lightly doped, approximately $10^{12}\ \si{cm^{-3}}$. The intrinsic-layer thickness was swept over
+Dark J--V simulations were then performed by sweeping the applied voltage from reverse bias to forward bias. The current density was plotted as $\ln |J|$ versus voltage, and $J_0$ was extracted from the approximately linear region of the forward-bias curve. The theoretical saturation current density was calculated by
+\begin{equation}
+J_0 =
+\frac{qD_p p_{n0}}{L_p}
++
+\frac{qD_n n_{p0}}{L_n},
+\end{equation}
+where
 \[
-    \di = 0.5,\ 1,\ 2,\ 5\ \um.
+p_{n0} = \frac{n_i^2}{N_D},
+\qquad
+n_{p0} = \frac{n_i^2}{N_A}.
 \]
-For each thickness, an illuminated J--V simulation was used to extract $|\jsc|$, $\voc$, $W$, and fill factor (FF).
+The diffusion coefficients were obtained from the Einstein relation,
+\[
+D = \mu \frac{kT}{q},
+\]
+and the diffusion lengths were calculated as
+\[
+L_n = \sqrt{D_n \tau_n},
+\qquad
+L_p = \sqrt{D_p \tau_p}.
+\]
 
+The illuminated J--V curve was simulated using a uniform optical generation rate,
+\[
+g_0 = 10^{21}\ \mathrm{cm^{-3}s^{-1}}.
+\]
+From the illuminated curve, $J_{SC}$ was obtained at $V=0$, and $V_{OC}$ was obtained at $J=0$. The analytical open-circuit voltage was calculated using
+\begin{equation}
+V_{OC}
+=
+\frac{kT}{q}
+\ln
+\left(
+\frac{|J_{SC}|}{J_0}+1
+\right).
+\end{equation}
+
+\subsection{Doping Dependence}
+
+To study doping dependence, two parameter sweeps were performed. First, $N_D$ was fixed at $10^{16}\ \mathrm{cm^{-3}}$, while $N_A$ was varied over
+\[
+10^{15},\ 10^{16},\ 10^{17}\ \mathrm{cm^{-3}}.
+\]
+Second, $N_A$ was fixed at $10^{16}\ \mathrm{cm^{-3}}$, while $N_D$ was varied over the same range.
+
+For each case, $V_{bi}$, $W$, and $J_0$ were extracted from Driftfusion and compared with the analytical formulas. This allowed the effects of p-side and n-side doping to be analyzed separately. The doping concentration was plotted on a logarithmic scale to clearly show the trends.
+
+\subsection{PIN Diode Simulation}
+
+A PIN diode was also simulated to study the effect of the intrinsic layer. The p- and n-regions used doping concentrations of
+\[
+10^{16}\ \mathrm{cm^{-3}},
+\]
+while the intrinsic region used a lightly doped concentration of approximately
+\[
+10^{12}\ \mathrm{cm^{-3}}.
+\]
+The intrinsic layer thickness was varied as
+\[
+d_i = 0.5,\ 1,\ 2,\ 5\ \mu\mathrm{m}.
+\]
+
+For each thickness, the PIN diode was simulated under the same uniform illumination condition. The values of $J_{SC}$ and $V_{OC}$ were extracted from the illuminated J--V curves. A PIN diode with $d_i = 2\ \mu\mathrm{m}$ was also compared with a standard p--n junction of the same total thickness. This comparison was used to explain why the wider depletion region in a PIN diode improves photogenerated carrier collection for photodetection.
+
+\subsection{Data Comparison}
+
+The analytical and simulated results were organized into tables and plots. Semi-logarithmic plots were used for dark J--V curves, and logarithmic doping axes were used for the doping sweep results. Differences between theory and simulation were explained using non-ideal effects included in Driftfusion, such as SRH recombination, finite device thickness, surface recombination, gradual electric-field decay, and numerical mesh effects.
 \section{Analytical Models Used for Comparison}
 
 \subsection{Built-in Potential and Depletion Width}
